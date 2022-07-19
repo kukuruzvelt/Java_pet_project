@@ -1,45 +1,28 @@
 package task.models.entity;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+@Getter
+@Setter
 public class Service {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private int price;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Service service = (Service) o;
-        return id == service.id && price == service.price && Objects.equals(name, service.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price);
-    }
-
-    @Override
-    public String toString() {
-        return "Service{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
-    }
+//    @ManyToMany(targetEntity = MasterService.class, cascade = { CascadeType.ALL })
+//    @JoinTable(name = "master_service",
+//            joinColumns = { @JoinColumn(name = "id") },
+//            inverseJoinColumns = { @JoinColumn(name = "service_id") })
+//    private Set<MasterService> items;
 
     public static class ServiceBuilder {
         private Service newService;

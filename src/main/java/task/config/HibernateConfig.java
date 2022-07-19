@@ -34,7 +34,7 @@ public class HibernateConfig {
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -49,6 +49,7 @@ public class HibernateConfig {
         dataSource.setUrl(prop.getProperty("connection_url"));
         dataSource.setUsername(prop.getProperty("username"));
         dataSource.setPassword(prop.getProperty("password"));
+
 
         return dataSource;
     }

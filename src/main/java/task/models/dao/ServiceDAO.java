@@ -1,11 +1,25 @@
-//package task.models.dao;
-//
-//import org.itstep.model.entity.Service;
-//
-//import java.sql.*;
-//import java.util.ArrayList;
-//
-//public class ServiceDAO {
+package task.models.dao;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import task.models.entity.MasterService;
+import task.models.entity.Service;
+import task.models.entity.User;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Optional;
+
+@Repository
+public class ServiceDAO {
+
+    @Autowired
+    private static SessionFactory sessionFactory;
+
 //    public static ArrayList<Service> getServices(){
 //        ArrayList<Service> result = new ArrayList<>();
 //        try {
@@ -28,30 +42,31 @@
 //    }
 //
 //
-//    public static Service getService(int id){
-//        Service service = null;
-//        try {
-//            Connection connection = ConnectionPool.getConnection();
-//            PreparedStatement statement = connection.prepareStatement("select id, name, price from service where id = ?");
-//            statement.setInt(1, id);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            if (resultSet.next()) {
-//                service = new Service.ServiceBuilder().withId(resultSet.getInt("id"))
-//                        .withName(resultSet.getString("name")).withPrice(resultSet.getInt("price"))
-//                        .build();
-//            }
-//
-//            statement.close();
-//            connection.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return service;
-//    }
-//
-//    public static ArrayList<Service> getServicesForMaster(int master_id){
-//        ArrayList<Service> result = new ArrayList<>();
+    public static Optional<Service> getService(int id){
+        Session session = sessionFactory.openSession();
+        Optional<Service> service = Optional.of(session.get(Service.class, id));
+        session.close();
+        return service;
+    }
+
+    public static ArrayList<Service> getServicesForMaster(User user){
+        int master_id = user.getId();
+        ArrayList<Service> result = new ArrayList<>();
+        Session session = sessionFactory.openSession();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<MasterService> criteriaQuery = criteriaBuilder.createQuery(MasterService.class);
+        Root<MasterService> root = criteriaQuery.from(MasterService.class);
+        //criteriaQuery.select(root).where(root.get("master_id").in(master_id));
+        //todo джойнить сервисы по ид(@ManyToMany)
+
+        //Join<MasterService, Service> join = root.join();
+
+//        Query query = session.createQuery(criteriaQuery);
+//        List<Service> userList = query.getResultList();
+//        result= (ArrayList<User>) userList;
+        session.close();
+
 //        try {
 //            Connection connection = ConnectionPool.getConnection();
 //            PreparedStatement statement = connection.prepareStatement("select service_id from master_service " +
@@ -68,9 +83,9 @@
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-//
-//        return result;
-//    }
-//
-//
-//}
+
+        return result;
+    }
+
+
+}
